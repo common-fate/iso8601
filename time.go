@@ -6,20 +6,20 @@ package iso8601
 
 import (
 	"strings"
-	gotime "time"
+	"time"
 )
 
 const layout = "2006-01-02T15:04:05.999Z"
 
 type Time struct {
-	gotime.Time
+	time.Time
 }
 
 // UnmarshalJSON Parses the json string in the custom format
 func (ct *Time) UnmarshalJSON(b []byte) (err error) {
 	s := strings.Trim(string(b), `"`)
 
-	nt, err := gotime.Parse(layout, s)
+	nt, err := time.Parse(layout, s)
 
 	*ct = Time{nt}
 	return
@@ -37,11 +37,11 @@ func (ct Time) String() string {
 }
 
 // New creates a new ISO8601 Time from a standard Go time.
-func New(t gotime.Time) Time {
+func New(t time.Time) Time {
 	return Time{t}
 }
 
 // Now is a helper to create a ISO8601 Time at the current instant.
 func Now() Time {
-	return Time{gotime.Now()}
+	return Time{time.Now()}
 }
