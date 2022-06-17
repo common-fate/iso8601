@@ -33,7 +33,7 @@ func (ct Time) MarshalJSON() ([]byte, error) {
 
 // String returns the time in ISO8601 format
 func (ct Time) String() string {
-	return ct.Time.Format(layout)
+	return ct.Time.UTC().Format(layout)
 }
 
 // New creates a new ISO8601 Time from a standard Go time.
