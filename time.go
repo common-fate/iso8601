@@ -7,6 +7,8 @@ package iso8601
 import (
 	"strings"
 	"time"
+
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
 const Layout = "2006-01-02T15:04:05.999Z"
@@ -54,4 +56,20 @@ func New(t time.Time) Time {
 // Now is a helper to create a ISO8601 Time at the current instant.
 func Now() Time {
 	return Time{time.Now()}
+}
+
+// MarshalDynamoDBAttributeValue converts a custom type to a DynamoDB attribute value.
+func (ct Time) MarshalDynamoDBAttributeValue() (types.AttributeValue, error) {
+	return &types.AttributeValueMemberS{Value: ct.String()}, nil
+}
+
+// UnmarshalDynamoDBAttributeValue converts a DynamoDB attribute value to a custom type.
+func (ct *Time) UnmarshalDynamoDBAttributeValue(av types.AttributeValue) error {
+	s := av.(*types.AttributeValueMemberS).Value
+	t, err := Parse(s)
+	if err != nil {
+		return err
+	}
+	ct.Time = t.Time
+	return nil
 }
